@@ -26,13 +26,27 @@ html{
 <header class="bg-blue-700 text-white shadow-lg">
 <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 <h1 class="text-3xl font-bold">💧 AquaAlert</h1>
+<button
+onclick="logout()"
+class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-700">
+Logout
+</button>
 
 <nav>
 <ul class="flex gap-6 text-lg">
-<li><a href="#" class="hover:text-yellow-300">Home</a></li>
-<li><a href="#report" class="hover:text-yellow-300">Report Leak</a></li>
-<li><a href="#about" class="hover:text-yellow-300">About</a></li>
-<li><a href="#contact" class="hover:text-yellow-300">Contact</a></li>
+<li><a href="#" class="hover:text-yellow-300">HOME</a></li>
+<li><a href="gallery.html" class="hover:text-yellow-300">GALLERY</a></li>
+<li><a href="service.html" class="hover:text-yellow-300">SERVICE</a></li>
+<li><a href="servicearea.html" class="hover:text-yellow-300">SERVICE AREA</a></li>
+<li><a href="#report" class="hover:text-yellow-300">REPORT LEAK</a></li>
+<li><a href="#about" class="hover:text-yellow-300">ABOUT</a></li>
+<li><a href="contact.html" class="hover:text-yellow-300">CONTACT</a></li>
+<li>
+<a href="requests.html" class="hover:text-yellow-300">
+Requests
+</a>
+</li>
+
 </ul>
 </nav>
 </div>
@@ -56,7 +70,8 @@ Report Leakage
 </div>
 </section>
 
-<!-- Statistics -->
+
+
 <section class="py-12 bg-white">
 <div class="container mx-auto px-6">
 
@@ -89,7 +104,71 @@ Impact Dashboard
 </div>
 </div>
 </section>
+<!-- System Features -->
+<section class="py-12 bg-gray-100">
 
+<div class="container mx-auto px-6">
+
+<h2 class="text-3xl font-bold text-center text-blue-700 mb-8">
+Our Achievements
+</h2>
+
+<div class="grid md:grid-cols-3 gap-6">
+
+<!-- Completed Works -->
+<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
+
+<h3 class="text-xl font-bold text-green-700">
+✅ Completed Repairs
+</h3>
+
+<p class="mt-2 text-gray-600">
+120 reported leakages have been successfully repaired through AquaAlert.
+</p>
+<a href="completework.html"
+class="inline-block mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800">
+View Details
+</a>
+</div>
+
+<!-- People's Reviews -->
+<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
+
+<h3 class="text-xl font-bold text-blue-700">
+⭐ People's Reviews
+</h3>
+
+<p class="mt-2 text-gray-600">
+See what citizens say about the AquaAlert reporting system.
+</p>
+<a href="review.html"
+class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">
+Read Reviews
+</a>
+
+
+</div>
+
+<!-- Water Saved -->
+<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
+
+<h3 class="text-xl font-bold text-cyan-700">
+💧 Water Saved
+</h3>
+
+<p class="mt-2 text-gray-600">
+More than 25,000 litres of water have been saved through timely leak reporting.
+</p>
+
+
+
+</div>
+
+</div>
+
+</div>
+
+</section>
 <!-- About -->
 <section id="about" class="container mx-auto px-6 py-12">
 <div class="bg-white rounded-xl shadow-lg p-8">
@@ -185,8 +264,13 @@ class="bg-red-600 text-white px-4 py-2 rounded">
 Fullscreen
 </button>
 
-</div>
+<button
+type="reset"
+class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-800">
+Reset Form
+</button>
 
+</div>
 <p id="locationResult" class="md:col-span-2"></p>
 
 <p id="reportID"
@@ -196,28 +280,13 @@ class="md:col-span-2 font-bold text-blue-700"></p>
 </div>
 </section>
 
-<!-- Footer -->
-<footer id="contact" class="bg-gray-900 text-white py-8">
-<div class="container mx-auto text-center">
-
-<h3 class="text-2xl font-bold mb-2">
-💧 AquaAlert
-</h3>
-
-<p>Water Leakage Reporting & Monitoring System</p>
-
-<p class="mt-3">Email: support@aquaalert.com</p>
-
-<p>Phone: +91 9876543210</p>
-
-<p class="mt-4 text-gray-400">
-© 2026 AquaAlert. All Rights Reserved.
-</p>
-
-</div>
-</footer>
 
 <script>
+    if(sessionStorage.getItem("loggedIn")!="true"){
+    window.location.href="login.html";
+
+}
+
 
 // File Preview API
 document.getElementById("fileInput").addEventListener("change", function(e){
@@ -328,34 +397,76 @@ alert("Geolocation not supported");
 }
 
 }
-
-// Submit Report
 function submitReport(){
 
 const name =
-document.querySelector('input[placeholder="Your Name"]').value;
+document.querySelector('input[placeholder="Your Name"]').value.trim();
+
+const email =
+document.querySelector('input[type="email"]').value.trim();
 
 const location =
-document.querySelector('input[placeholder="Location of Leak"]').value;
+document.querySelector('input[placeholder="Location of Leak"]').value.trim();
 
-localStorage.setItem("reporterName", name);
-localStorage.setItem("leakLocation", location);
+const phone =
+document.querySelector('input[type="tel"]').value.trim();
+
+const description =
+document.querySelector("textarea").value.trim();
+
+if(name=="" || email=="" || location=="" || phone=="" || description==""){
+
+alert("Please fill all fields");
+return;
+
+}
+
+const emailPattern =
+/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if(!emailPattern.test(email)){
+
+alert("Enter a valid Email");
+return;
+
+}
+
+if(phone.length!=10 || isNaN(phone)){
+
+alert("Enter a valid 10-digit Phone Number");
+return;
+
+}
+
+localStorage.setItem("reporterName",name);
+localStorage.setItem("leakLocation",location);
 
 const reportID =
-"AQ" + Math.floor(Math.random()*10000);
+"AQ"+Math.floor(Math.random()*10000);
 
-sessionStorage.setItem("reportID", reportID);
+sessionStorage.setItem("reportID",reportID);
 
 document.getElementById("reportID").innerHTML =
-"Report ID: " + reportID;
+"Report ID : "+reportID;
 
-if(Notification.permission === "granted"){
+if(Notification.permission==="granted"){
 
 new Notification("Leak Report Submitted Successfully!");
 
 }
+let reports = JSON.parse(localStorage.getItem("reports")) || [];
 
-alert("Report Submitted Successfully");
+reports.push({
+    id: reportID,
+    name: name,
+    location: location,
+    phone: phone,
+    status: "Pending"
+});
+
+localStorage.setItem("reports", JSON.stringify(reports));
+
+alert("Report Submitted Successfully!");
 
 }
 
@@ -390,9 +501,16 @@ document.documentElement.requestFullscreen();
 }
 
 }
+function logout(){
 
+    sessionStorage.removeItem("loggedIn");
+
+    alert("Logged Out Successfully");
+
+    window.location.href="login.html";
+
+}
 </script>
 
 </body>
-</html>
-
+</html> 
