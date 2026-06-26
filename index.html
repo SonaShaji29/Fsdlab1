@@ -116,8 +116,7 @@ Our Achievements
 <div class="grid md:grid-cols-3 gap-6">
 
 <!-- Completed Works -->
-<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
-
+<div class="achievement-card bg-white p-6 rounded-lg shadow transition">
 <h3 class="text-xl font-bold text-green-700">
 ✅ Completed Repairs
 </h3>
@@ -132,7 +131,7 @@ View Details
 </div>
 
 <!-- People's Reviews -->
-<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
+<div class="achievement-card bg-white p-6 rounded-lg shadow transition">
 
 <h3 class="text-xl font-bold text-blue-700">
 ⭐ People's Reviews
@@ -150,8 +149,7 @@ Read Reviews
 </div>
 
 <!-- Water Saved -->
-<div class="bg-white p-6 rounded-lg shadow hover:scale-105 transition">
-
+<div class="achievement-card bg-white p-6 rounded-lg shadow transition">
 <h3 class="text-xl font-bold text-cyan-700">
 💧 Water Saved
 </h3>
@@ -193,8 +191,7 @@ water leakages quickly using their computer or mobile device.
 Report a Water Leak
 </h2>
 
-<form class="grid md:grid-cols-2 gap-6">
-
+<form id="reportForm" class="grid md:grid-cols-2 gap-6">
 <input type="text"
 placeholder="Your Name"
 class="border p-3 rounded-lg">
@@ -212,9 +209,14 @@ placeholder="Phone Number"
 class="border p-3 rounded-lg">
 
 <textarea
+id="description"
 placeholder="Describe the Leakage Problem"
 rows="4"
 class="border p-3 rounded-lg md:col-span-2"></textarea>
+
+<p id="charCount" class="md:col-span-2 text-sm text-gray-600">
+Characters: 0
+</p>
 
 <input type="file"
 id="fileInput"
@@ -226,8 +228,7 @@ class="hidden w-64 rounded-lg border shadow">
 </div>
 
 <button
-type="button"
-onclick="submitReport()"
+type="submit"
 class="bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-900 md:col-span-2">
 Submit Report
 </button>
@@ -282,8 +283,13 @@ class="md:col-span-2 font-bold text-blue-700"></p>
 
 
 <script>
+    window.addEventListener("load", function(){
+
     if(sessionStorage.getItem("loggedIn")!="true"){
-    window.location.href="login.html";
+        window.location.href="login.html";
+    }
+
+});
 
 }
 
@@ -312,6 +318,66 @@ reader.readAsDataURL(file);
 
 });
 
+// INPUT EVENT
+document.getElementById("description").addEventListener("input", function() {
+    document.getElementById("charCount").innerText =
+    "Characters: " + this.value.length;
+});
+
+// FOCUS & BLUR EVENTS
+const fields = document.querySelectorAll(
+'input[type="text"], input[type="email"], input[type="tel"], textarea'
+);
+
+fields.forEach(field => {
+
+    field.addEventListener("focus", function () {
+        this.style.border = "2px solid blue";
+        this.style.backgroundColor = "#e0f2fe";
+    });
+
+    field.addEventListener("blur", function () {
+        this.style.border = "1px solid #ccc";
+        this.style.backgroundColor = "white";
+    });
+
+});
+const cards = document.querySelectorAll(".achievement-card");
+
+cards.forEach(card => {
+
+    card.addEventListener("mouseover", function () {
+        this.style.transform = "scale(1.05)";
+        this.style.backgroundColor = "#dbeafe";
+    });
+
+    card.addEventListener("mouseout", function () {
+        this.style.transform = "scale(1)";
+        this.style.backgroundColor = "white";
+    });
+
+});
+// SUBMIT EVENT
+document.getElementById("reportForm").addEventListener("submit", function(e){
+
+    e.preventDefault(); // Prevent page refresh
+
+    submitReport(); // Call your existing function
+
+});
+window.addEventListener("resize", function(){
+
+console.log(
+"Width : " + window.innerWidth
+);
+
+});
+window.addEventListener("scroll", function(){
+
+console.log("Page Scrolled");
+
+});
+
 // Session Storage Report ID
 let reportNumber = sessionStorage.getItem("reportID");
 
@@ -333,6 +399,7 @@ Notification.permission !== "granted"){
 Notification.requestPermission();
 
 }
+
 
 // Save Report
 function saveReport(){
