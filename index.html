@@ -222,6 +222,9 @@ Characters: 0
 id="fileInput"
 class="border p-3 rounded-lg md:col-span-2">
 
+<p id="fileStatus"
+class="text-green-600 font-semibold md:col-span-2"></p>
+
 <div class="md:col-span-2">
 <img id="preview"
 class="hidden w-64 rounded-lg border shadow">
@@ -291,32 +294,33 @@ class="md:col-span-2 font-bold text-blue-700"></p>
 
 });
 
-
-
-
-// File Preview API
+// CHANGE EVENT
 document.getElementById("fileInput").addEventListener("change", function(e){
 
-const file = e.target.files[0];
+    const file = e.target.files[0];
 
-if(file){
+    if(file){
 
-const reader = new FileReader();
+        document.getElementById("fileStatus").innerHTML =
+        "✅ File Selected: " + file.name;
 
-reader.onload = function(event){
+        const reader = new FileReader();
 
-const preview = document.getElementById("preview");
+        reader.onload = function(event){
 
-preview.src = event.target.result;
-preview.classList.remove("hidden");
+            document.getElementById("preview").src =
+            event.target.result;
 
-};
+            document.getElementById("preview").classList.remove("hidden");
 
-reader.readAsDataURL(file);
+        };
 
-}
+        reader.readAsDataURL(file);
+
+    }
 
 });
+
 
 // INPUT EVENT
 document.getElementById("description").addEventListener("input", function() {
